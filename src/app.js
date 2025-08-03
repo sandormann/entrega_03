@@ -6,6 +6,8 @@ import viewsRouter from './routes/views.router.js';
 import allRoutes from './routes/index.js';
 import http from 'http';
 import { Server } from 'socket.io';
+import mongoose from 'mongoose';
+
 import ProductsManager from './managers/productsManager.js';
 const productsManager = new ProductsManager();
 const app = express();
@@ -38,7 +40,6 @@ io.on('connection', async(socket)=>{
 		await productsManager.addProduct(producto);
 	})
 
-	
 })
 
 //Config HBS
@@ -60,5 +61,10 @@ app.use('/api', allRoutes);
 serverHttp.listen(PORT, ()=>{
 	console.log(`On port ${ PORT }`)
 });
+
+//Conexión mongoDB
+const resultConnection = mongoose.connect("mongodb+srv://main_user:FGbidGxQ5ejq1t97@mycluster.wgus3.mongodb.net/tienda_coder?retryWrites=true&w=majority&appName=MyCluster")
+.then(() => console.log('MongoDB connected sucess'))
+.catch((e) => console.log('MongoDB Error' + e))
 
 

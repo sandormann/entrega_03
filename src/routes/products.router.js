@@ -1,124 +1,114 @@
 import { Router } from 'express';
-import ProductsManager from '../managers/productsManager.js';
+// import ProductsManager from '../managers/productsManager.js';
+import productModel from '../models/product.model.js';
 
 const productsRouter = Router();
 
-const productsManager = new ProductsManager();
+// const productsManager = new ProductsManager();
 
 //Listar productos
-
 productsRouter.get('/', async (req,res) => {
 	try{
-		const products = await productsManager.getProducts();
+		// const products = await productsManager.getProducts();
+		const products = await productModel.find()
 		return res.status(200).json({ 
 					status: 'success', 
 					products
 				});	
-	}catch(error){
-		res.status(500).json({
-					status:'error',
-					msg:'Error al obtenes los productos'
+	}catch(e){
+		console.log({message: e.message});
+		return res.status(500).json({
+					status:'Internal error server',
+					msg:'View console'
 				});
 	}
 });
 
 //Agregar productos
-
 productsRouter.post('/', async(req,res) => {
-	
 	try{
-		const { title,description,code,price,status,category,thumbnails } = req.body;
-	
-		const newProduct = {  
-			title,
-			description,
-			code,
-			price,
-			status,
-			category,
-			thumbnails
-		}
-
-		const product = await productsManager.addProduct(newProduct);
-		return res.status(201).json({
-					status:'success',
+		const { title,description,code,price,status,category } = req.body;
+		const newProduct = await productModel.create({title,description,code,price,status,category
+		})
+		//const product = await productsManager.addProduct(newProduct);
+		return res.status(200).json({
+					status:'success', 
 					newProduct
 				});	
-	}catch(error){
-		console.log('Error al crear el producto', error);
+	}catch(e){
+		console.log({message: e.message});
 		return res.status(500).json({
-					status:'Error',
-					msg:'Error del servidor'
+					status:'Internal error server',
+					msg:'View console'
 				});
 	}	
-	
 });
 
 //Buscar porducto por id
-
 productsRouter.get('/:pid', async(req,res)=>{
 	try{
 		const { pid } = req.params;
-		const product = await productsManager.getProductById(pid);
-		res.status(200).json({ 
-			status:"success",
-			pid, 
-			msg: product
-		});
-	}catch(error){
-		return res.status(404).json({
-			status:"Error", 
-			msg:'Producto no encontrado',
+		// const product = await productsManager.getProductById(pid);
+		const product = await productModel.findById({_id: pid})
+		return res.status(200).json({ 
+				status:"success",
+				product
+			});
+	}catch(e){
+		console.log({message: e.message});
+		return	res.status(500).json({
+			status:"Internal error server", 
+			msg:'View console',
 		})
 	}
 	
 });
 
-//Eliminar producto
-productsRouter.delete('/:pid',async(req,res)=>{
-	try{
-		const { pid } = req.params;	
-		await productsManager.deleteProduct(pid)
-		res.status(200).json({ 
-			status:"success",
-			pid
-		});
-	}catch(error){
-		console.log('Producto no eliminado', error);
-		res.status(500).json({
-			status:'error', 
-			msg:'Producto no eliminado'})
-	}
-	
-	
-	
-})
-
 //Actualizar producto
-
-productsRouter.put('/:pid', async(req, res) => {
+productsRouter.put('/:pid', async(req,res) => {
 	try{
 		const { pid } = req.params;
-		const { title, description, code, price, status, stock, category, thumbnails } = req.body;
-		const product = await productsManager.updateProduct(pid, { title, description, code, price, status, stock, category, thumbnails });
-		
-		if(!product){
-			res.status(500).json({
-				status:'error', 
-				msg: "Producto no encontrado"
-			});
-		}
+		const { body } = req;
+		let updatedProduct = await productModel.updateOne({_id:pid}, {$set: {...body}})
+		// const product = await productsManager.updateProduct(pid, { title, description, code, price, status, stock, category, thumbnails });
+		// if(!product){
+		// 	res.status(500).json({
+		// 		status:'error', 
+		// 		msg: "Producto no encontrado"
+		// 	});
+		// }
 
-		res.status(200).json({
+		return res.status(200).json({
 			status:'success',
-			pid,
-			product
+			updatedProduct
 		});		
-	}catch(error){
+	}catch(e){
+		console.log({message: e.message})
 		return res.status(500).json({
-			status:'error', 
-			msg: "Error del servidor"
+			status:'Internal error server', 
+			msg: "View console"
 		});
 	}  	
 });
+
+//Eliminar producto
+productsRouter.delete('/:pid',async(req,res)=>{
+	
+	try{
+		const { pid } = req.params;	
+		// await productsManager.deleteProduct(pid)
+		let response = await productModel.findByIdAndDelete(pid)
+		return res.status(200).json({ 
+			status:"success",
+			response
+		});
+	}catch(e){
+		console.log({message: e.message});
+		return res.status(500).json({
+			status:'Internal error server', 
+			msg:'View console'
+		})
+	}
+})
+
 export default productsRouter;
