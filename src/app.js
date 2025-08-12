@@ -32,11 +32,11 @@ io.on('connection', async(socket)=>{
 	const products = await productModel.find();
 	socket.emit('showProducts', products);
 
-	// socket.on('eliminarProducto', async(id)=>{º
-	// 	await productsManager.deleteProduct(id);
-	// 	//Envío del resultado
-	// 	io.emit('showProducts', await productsManager.getProducts());
-	// });
+	socket.on('eliminarProducto', async(id)=>{
+		await productModel.findByIdAndDelete(id);
+		//Envío del resultado
+		io.emit('showProducts', await productModel.find());
+	});
 
 	// socket.on('addProduct', async(producto)=>{
 	// 	await productsManager.addProduct(producto);
