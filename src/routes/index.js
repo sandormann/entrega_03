@@ -4,7 +4,7 @@ import productsRouter from './products.router.js';
 
 const router = Router();
 
-router.use('/cart', cartRouter);
-router.use('/products', productsRouter);
+router.use('/', cartRouter);
+router.use('/', productsRouter);
 
 export default router;

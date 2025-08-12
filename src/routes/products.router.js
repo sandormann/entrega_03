@@ -1,20 +1,17 @@
 import { Router } from 'express';
-// import ProductsManager from '../managers/productsManager.js';
 import productModel from '../models/product.model.js';
 
 const productsRouter = Router();
 
-// const productsManager = new ProductsManager();
-
 //Listar productos
-productsRouter.get('/', async (req,res) => {
+productsRouter.get('/products', async (req,res) => {
 	try{
 		// const products = await productsManager.getProducts();
 		const products = await productModel.find()
 		return res.status(200).json({ 
 					status: 'success', 
 					products
-				});	
+				});
 	}catch(e){
 		console.log({message: e.message});
 		return res.status(500).json({

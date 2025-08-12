@@ -3,10 +3,12 @@ import { engine } from 'express-handlebars';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import viewsRouter from './routes/views.router.js';
-import allRoutes from './routes/index.js';
+import allRoutes from './routes/products.router.js';
 import http from 'http';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
+import productModel from './models/product.model.js';
+import dataBase from './db/connectionDB.js';
 
 import ProductsManager from './managers/productsManager.js';
 const productsManager = new ProductsManager();
@@ -23,22 +25,22 @@ const serverHttp = http.createServer(app);
 //Se inica el servidor con io
 const io = new Server(serverHttp);
 
-let messages = [];
+// let messages = [];
 io.on('connection', async(socket)=>{
 	console.log("Cliente conectado", socket.id);
 
-	const products = await productsManager.getProducts();
+	const products = await productModel.find();
 	socket.emit('showProducts', products);
 
-	socket.on('eliminarProducto', async(id)=>{
-		await productsManager.deleteProduct(id);
-		//Envío del resultado
-		io.emit('showProducts', await productsManager.getProducts());
-	});
+	// socket.on('eliminarProducto', async(id)=>{º
+	// 	await productsManager.deleteProduct(id);
+	// 	//Envío del resultado
+	// 	io.emit('showProducts', await productsManager.getProducts());
+	// });
 
-	socket.on('addProduct', async(producto)=>{
-		await productsManager.addProduct(producto);
-	})
+	// socket.on('addProduct', async(producto)=>{
+	// 	await productsManager.addProduct(producto);
+	// });
 
 })
 
@@ -62,9 +64,7 @@ serverHttp.listen(PORT, ()=>{
 	console.log(`On port ${ PORT }`)
 });
 
-//Conexión mongoDB
-const resultConnection = mongoose.connect("mongodb+srv://main_user:FGbidGxQ5ejq1t97@mycluster.wgus3.mongodb.net/tienda_coder?retryWrites=true&w=majority&appName=MyCluster")
-.then(() => console.log('MongoDB connected sucess'))
-.catch((e) => console.log('MongoDB Error' + e))
+//DB Mongo Connection
 
+dataBase();
 
