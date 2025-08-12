@@ -22,12 +22,11 @@ productsRouter.get('/products', async (req,res) => {
 });
 
 //Agregar productos
-productsRouter.post('/', async(req,res) => {
-	try{
+productsRouter.post('/products', async(req,res) => {
+ 	try{
 		const { title,description,code,price,status,category } = req.body;
-		const newProduct = await productModel.create({title,description,code,price,status,category
-		})
-		//const product = await productsManager.addProduct(newProduct);
+		console.log(req.body);
+		const newProduct = await productModel.create({title,description,code,price,status,category})
 		return res.status(200).json({
 					status:'success', 
 					newProduct

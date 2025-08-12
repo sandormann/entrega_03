@@ -17,6 +17,8 @@ const PORT = 8000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 //Carpeta Public
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -38,11 +40,16 @@ io.on('connection', async(socket)=>{
 		io.emit('showProducts', await productModel.find());
 	});
 
-	// socket.on('addProduct', async(producto)=>{
-	// 	await productsManager.addProduct(producto);
-	// });
-
-})
+	socket.on('addProduct', async(producto)=>{
+		try{
+			const { title,description,code,price,status,category} = producto;
+			await productModel.create({title,description,code,price,status,category});
+		}catch(e){
+			console.log(e)
+		}
+			
+	});
+});
 
 //Config HBS
 app.engine('handlebars', engine({

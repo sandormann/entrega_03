@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 			const res = await fetch('http://localhost:8000/api/products');
 			const products = await res.json();
 			renderProducts(products);
-			console.log('Datos del server',products);
+			// console.log('Datos del server',products);
 			
 		}catch(e){
 			console.error(e);
