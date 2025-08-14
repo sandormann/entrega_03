@@ -1,16 +1,18 @@
 import { Router } from 'express';
 import productModel from '../models/product.model.js';
-
+import { PaginationParameters } from 'mongoose-paginate-v2';
 const productsRouter = Router();
 
 //Listar productos
 productsRouter.get('/products', async (req,res) => {
 	try{
-		// const products = await productsManager.getProducts();
-		const products = await productModel.find()
+		const parsedQuery = new PaginationParameters(req);
+		const queries = parsedQuery.get();
+		const products = await productModel.paginate(...queries);
+		// console.log(products.page)		
 		return res.status(200).json({ 
 					status: 'success', 
-					products
+				 	products
 				});
 	}catch(e){
 		console.log({message: e.message});

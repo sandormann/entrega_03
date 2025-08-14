@@ -1,7 +1,7 @@
 import { Router } from 'express';
 const viewsRouter = Router();
 
-viewsRouter.get('/products',(req, res) => {
+viewsRouter.get('/',(req, res) => {
 	res.render('products');
 });
 viewsRouter.get('/form',(req, res) => {

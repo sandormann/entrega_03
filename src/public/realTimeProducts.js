@@ -1,14 +1,13 @@
 document.addEventListener('DOMContentLoaded',()=>{
 	const socket = io();
-
 	
 	//Elementos del dom
 	const productsContainer = document.getElementById('items_container');
 
-	const renderProducts = async(products)=>{
+	const renderProducts = async(productsArray)=>{
 		try{
 			productsContainer.innerHTML = "";
-			products.forEach(p => {
+			productsArray.forEach(p => {
 				const card = document.createElement('div');
 				card.classList.add('card');
 
@@ -35,13 +34,41 @@ document.addEventListener('DOMContentLoaded',()=>{
 		}
 	}
 	
+	//Url
+		let defaultFilters = {
+			page:1,
+			limit:3,
+			sort:'price',
+			// category:''
+		}
+	const buildURL = ()=>{	
+		const filters = { ...defaultFilters }; 
+		const params = new URLSearchParams();
+		if(filters.page) params.set('page', filters.page);
+		if(filters.page) params.set('limit', filters.limit);
+		params.set('sort', filters.sort);
+		// params.set('category', category);
+
+		// return
+		console.log(filters.page) 
+		console.log(`http://localhost:8000/api/products?${params.toString()}`)
+		return `http://localhost:8000/api/products?${params.toString()}`
+	}
+
+
 	//Productos con fetch
 	const fetchProducts = async()=>{
 		try{
-			const res = await fetch('http://localhost:8000/api/products');
+			const url = buildURL();
+			// 'http://localhost:8000/api/products?page=1&limit=8&sort=price';
+			const res = await fetch(url);
 			const products = await res.json();
-			renderProducts(products);
-			// console.log('Datos del server',products);
+			const productsArray = products.products.docs;
+			renderProducts(productsArray);
+			// console.log('Datos del server',productsArray);
+			console.log(products)
+			paginationsControls(products);
+			buildURL()
 			
 		}catch(e){
 			console.error(e);
@@ -52,4 +79,49 @@ document.addEventListener('DOMContentLoaded',()=>{
 	socket.on('showProducts', (data)=>{
 		renderProducts(data)
 	});
+	
+
+	//Paginación
+	const prevBtn = document.getElementById('prevPage');
+	const nextBtn = document.getElementById('nextPage');
+	const textPage = document.getElementById('infoPage');
+
+	let  totalPages = 1;
+	let isLoading = false;
+
+	//Actualización de páginas
+	const paginationsControls = async(products) => {
+		textPage.textContent = `Página ${products.products.page} de ${products.products.totalPages}`
+		prevBtn.disabled = !products.products.hasPrevPage; 
+		nextBtn.disabled = !products.products.hasNextPage;
+
+		totalPages = products.products.totalPages;
+	}
+	
+		prevBtn.addEventListener('click',()=>{
+
+			if(defaultFilters.page <= 1 || isLoading  )return;
+	
+				defaultFilters.page-=1;	
+				isLoading = true;
+
+				fetchProducts().finally(()=>{
+					isLoading = false
+				})
+			
+		})
+
+		nextBtn.addEventListener('click',()=>{
+			if(defaultFilters.page >= totalPages || isLoading)return;
+			
+				defaultFilters.page+=1;	
+				isLoading = true;
+
+				fetchProducts().finally(()=>{
+					isLoading=false;
+				})
+			 
+			console.log(defaultFilters.page)
+		})
+	
 });

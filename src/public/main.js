@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }catch(e){
             console.log('Error to get product',e)
         }
-        // form.reset();
+        form.reset();
     });
+    
 });

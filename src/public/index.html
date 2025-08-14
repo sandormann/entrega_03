@@ -9,11 +9,26 @@
 <body>
 	<header>
 		<nav>
-			<a href="products">Productos</a>
+			<a href="/">Productos</a>
 			<a href="form">Formulario</a>
 		</nav>
 	</header>
-	<h1>Index</h1>
+	<main class="wrapper">
+		<section class="gallery">
+			<h2 class="gallery_title">Productos</h2>
+			<div id="items_container" class="items_container">
+				<!-- productos -->
+			</div>
+			<div class="container_btn">
+				<button id="prevPage" class="page_btn">Anterior</button>
+				<span id="infoPage" class="pageNumber"></span>
+				<button id="nextPage" class="page_btn">Siguiente</button>
+			</div>
+			
+		</section>
+	</main>	
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="realTimeProducts.js"></script>
 	
 </body>
 </html>

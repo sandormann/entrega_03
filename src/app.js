@@ -32,7 +32,7 @@ io.on('connection', async(socket)=>{
 	console.log("Cliente conectado", socket.id);
 
 	const products = await productModel.find();
-	socket.emit('showProducts', products);
+	// socket.emit('showProducts', products);
 
 	socket.on('eliminarProducto', async(id)=>{
 		await productModel.findByIdAndDelete(id);
