@@ -48,10 +48,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 		if(filters.page) params.set('limit', filters.limit);
 		params.set('sort', filters.sort);
 		// params.set('category', category);
-
-		// return
-		console.log(filters.page) 
-		console.log(`http://localhost:8000/api/products?${params.toString()}`)
+		
 		return `http://localhost:8000/api/products?${params.toString()}`
 	}
 
@@ -66,7 +63,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 			const productsArray = products.products.docs;
 			renderProducts(productsArray);
 			// console.log('Datos del server',productsArray);
-			console.log(products)
 			paginationsControls(products);
 			buildURL()
 			
@@ -120,8 +116,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 				fetchProducts().finally(()=>{
 					isLoading=false;
 				})
-			 
-			console.log(defaultFilters.page)
 		})
 	
 });
