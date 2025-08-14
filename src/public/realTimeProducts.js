@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 	//Url
 		let defaultFilters = {
 			page:1,
-			limit:3,
+			limit:10,
 			sort:'price',
 			// category:''
 		}
