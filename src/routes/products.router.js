@@ -43,15 +43,20 @@ productsRouter.post('/products', async(req,res) => {
 });
 
 //Buscar porducto por id
-productsRouter.get('/:pid', async(req,res)=>{
+productsRouter.get('/product/:pid', async(req,res)=>{
 	try{
 		const { pid } = req.params;
-		// const product = await productsManager.getProductById(pid);
+
 		const product = await productModel.findById({_id: pid})
 		return res.status(200).json({ 
 				status:"success",
 				product
 			});
+		// return res.status(200).render('productViewer',{
+		// 		status:"success",
+		// 		product
+		// 	});
+
 	}catch(e){
 		console.log({message: e.message});
 		return	res.status(500).json({
@@ -68,14 +73,7 @@ productsRouter.put('/:pid', async(req,res) => {
 		const { pid } = req.params;
 		const { body } = req;
 		let updatedProduct = await productModel.updateOne({_id:pid}, {$set: {...body}})
-		// const product = await productsManager.updateProduct(pid, { title, description, code, price, status, stock, category, thumbnails });
-		// if(!product){
-		// 	res.status(500).json({
-		// 		status:'error', 
-		// 		msg: "Producto no encontrado"
-		// 	});
-		// }
-
+		
 		return res.status(200).json({
 			status:'success',
 			updatedProduct

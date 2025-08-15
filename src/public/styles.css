@@ -86,9 +86,9 @@ body{
 }
 .btn_container{
 	display: flex;
-	justify-content: flex-start;
+	justify-content: space-between;
 	align-items: flex-end;}
-.btn_delete{
+.btn_delete, .btn_see{
 	width: 40%;
 	margin-top: 5px;
 	padding-right: 1px 8px 1px 8px;

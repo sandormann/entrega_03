@@ -12,13 +12,12 @@ const productSchema = mongoose.Schema({
     category: String
 });
 
-// mongoosePaginate.paginate.options = {
-//     customLabels:{
-//         docs:'payload',
-//         totalDocs: 'totalProducts',
-//         pagingCounter: false
-//     }
-// }
+mongoosePaginate.paginate.options = {
+    customLabels:{
+        docs:'payload',
+   
+    }
+}
 productSchema.plugin(mongoosePaginate);
 const productModel = mongoose.model(productsCollection, productSchema);
 

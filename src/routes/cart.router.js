@@ -3,12 +3,8 @@ import cartModel from '../models/cart.model.js';
 
 const cartRouter = Router();
 
-
-// import CartsManager from '../managers/cartsManager.js';
-// const cartsManager = new CartsManager();
-
 //Listar carrito
-cartRouter.get('/', async(req,res)=>{
+cartRouter.get('/carts', async(req,res)=>{
 	try{
 		// const carts = cartsManager.getCarts();
 		const carts = await cartModel.find();

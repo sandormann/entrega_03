@@ -3,7 +3,8 @@ import { engine } from 'express-handlebars';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import viewsRouter from './routes/views.router.js';
-import allRoutes from './routes/products.router.js';
+import allProducts from './routes/products.router.js';
+import allCarts from './routes/cart.router.js';
 import http from 'http';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
@@ -39,6 +40,11 @@ io.on('connection', async(socket)=>{
 		//Envío del resultado
 		io.emit('showProducts', await productModel.find());
 	});
+	// socket.on('showProduct', async(pid)=>{
+	// 	const product = await productModel.findById(pid)
+	// 	io.emit('showProduct',product)
+	// 	console.log(product)
+	// })
 
 	socket.on('addProduct', async(producto)=>{
 		try{
@@ -65,7 +71,7 @@ app.set('views', path.join(__dirname, 'views'));
 //Rutas del views
 app.use('/', viewsRouter);
 //Rutas del router
-app.use('/api', allRoutes);
+app.use('/api', allProducts,allCarts);
 //Config websocket
 serverHttp.listen(PORT, ()=>{
 	console.log(`On port ${ PORT }`)

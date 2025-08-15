@@ -19,16 +19,20 @@ document.addEventListener('DOMContentLoaded',()=>{
 				<p class="card_price">Code: ${p.code}</p>
 				<div class="btn_container">
 	 				<button class="btn_delete" data-id="${p._id}">Delete</button>
+	 				<button class="btn_see" data-id="${p._id}">Ver</button>
 	 			</div>
 			`
 			productsContainer.appendChild(card)
 
 			card.querySelector('.btn_delete').addEventListener('click',()=>{
-	 			console.log(p._id + p.title);
+	 			console.log(p._id, p.title);
 	 			socket.emit('eliminarProducto', p._id)
 	 		})
-
-			})
+			card.querySelector('.btn_see').addEventListener('click',()=>{
+	 			console.log(p._id, p.title);
+	 			socket.emit('Producto', p._id)
+	 		})
+		  })
 		}catch(e){
 			console.log('Error to get products', e)
 		}
@@ -60,11 +64,10 @@ document.addEventListener('DOMContentLoaded',()=>{
 			// 'http://localhost:8000/api/products?page=1&limit=8&sort=price';
 			const res = await fetch(url);
 			const products = await res.json();
-			const productsArray = products.products.docs;
+			const productsArray = products.products.payload;
 			renderProducts(productsArray);
 			// console.log('Datos del server',productsArray);
 			paginationsControls(products);
-			buildURL()
 			
 		}catch(e){
 			console.error(e);
@@ -72,9 +75,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 	}
 	fetchProducts()
 
-	socket.on('showProducts', (data)=>{
-		renderProducts(data)
-	});
+	// socket.on('showProducts', (data)=>{
+	// 	renderProducts(data)
+	// });
 	
 
 	//Paginación
