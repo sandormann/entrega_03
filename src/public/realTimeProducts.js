@@ -3,7 +3,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 	
 	//Elementos del dom
 	const productsContainer = document.getElementById('items_container');
-
+	const productContainer = document.getElementById('product_container');
+	const containerBtn = document.getElementById('container_btn');
+	const galleryTitle = document.getElementById('gallery_title')
 	const renderProducts = async(productsArray)=>{
 		try{
 			productsContainer.innerHTML = "";
@@ -29,15 +31,45 @@ document.addEventListener('DOMContentLoaded',()=>{
 	 			socket.emit('eliminarProducto', p._id)
 	 		})
 			card.querySelector('.btn_see').addEventListener('click',()=>{
-	 			console.log(p._id, p.title);
-	 			socket.emit('Producto', p._id)
+	 			fetchProduct(p._id, p.title);
 	 		})
 		  })
 		}catch(e){
 			console.log('Error to get products', e)
 		}
 	}
-	
+	const renderProduct = async(product)=>{
+		productsContainer.style.display = 'none';
+		containerBtn.style.display = 'none';
+		productContainer.classList.remove('hidden');
+		galleryTitle.innerHTML = '<h1>Producto</h1>'
+
+		productContainer.innerHTML = "";
+			const cardProduct = document.createElement('div');
+			cardProduct.classList.add('cardProduct');
+
+			cardProduct.innerHTML = `
+				<h2>${product.product.title}</h2>
+				<p class="card_text">${product.product.description}</p>
+				<p class="card_price">Precio: $ ${product.product.price}</p>
+				<p class="card_text">Categoría: ${product.product.category}</p>
+				<p class="card_price">Code: ${product.product.code}</p>
+				<div class="btn_container2">
+	 				<button class="btn_delete" data-id="${product.product._id}">Eliminar</button>
+	 				<button class="btn_see" data-id="${product.product._id}">Agregar</button>
+	 			</div>
+			</div>`;
+			productContainer.appendChild(cardProduct)
+
+		console.log(product.product.title);
+	}
+	//fetchPro
+	const fetchProduct = async(id)=>{
+		const res = await fetch(`http://localhost:8000/api/product/${id}`);
+		const product = await res.json();
+
+		renderProduct(product) 
+	}
 	//Url
 		let defaultFilters = {
 			page:1,

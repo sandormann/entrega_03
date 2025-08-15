@@ -146,7 +146,9 @@ body{
   color: #C8A2C8;
   text-shadow: 2px 2px 4px rgba(200, 162, 200, 0.3);
 }
-
+.hidden{
+	display: none;
+}
 .container_btn{
 	width: 83%;
 	height: 30px;
