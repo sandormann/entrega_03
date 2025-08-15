@@ -49,14 +49,14 @@ document.addEventListener('DOMContentLoaded',()=>{
 			cardProduct.classList.add('cardProduct');
 
 			cardProduct.innerHTML = `
-				<h2>${product.product.title}</h2>
-				<p class="card_text">${product.product.description}</p>
-				<p class="card_price">Precio: $ ${product.product.price}</p>
-				<p class="card_text">Categoría: ${product.product.category}</p>
-				<p class="card_price">Code: ${product.product.code}</p>
+				<h1>${product.product.title}</h1>
+				<p class="cardProduct_text">${product.product.description}</p>
+				<p class="cardProduct_price">Precio: $ ${product.product.price}</p>
+				<p class="cardProduct_text">Categoría: ${product.product.category}</p>
+				<p class="cardProduct_price">Code: ${product.product.code}</p>
 				<div class="btn_container2">
-	 				<button class="btn_delete" data-id="${product.product._id}">Eliminar</button>
-	 				<button class="btn_see" data-id="${product.product._id}">Agregar</button>
+	 				<button class="btn_delete btn_product" data-id="${product.product._id}">Eliminar</button>
+	 				<button class="btn_see btn_product" data-id="${product.product._id}">Agregar</button>
 	 			</div>
 			</div>`;
 			productContainer.appendChild(cardProduct)
