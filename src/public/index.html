@@ -14,15 +14,16 @@
 		</nav>
 	</header>
 	<main class="wrapper">
+
+<!-- ============Product-Gallery================= -->
 		<section class="gallery">
 			<h2 class="gallery_title" id="gallery_title">Productos</h2>
 			<div id="items_container" class="items_container">
 				<!-- productos -->
 			</div>
-			<div id="product_container" class="items_container hidden">
-				<!-- producto -->
-				<h1>Title</h1>
-			</div>
+			<<!-- div id="product_container" class="items_container hidden">
+				 --><!-- product_Info -->
+			<!-- </div> -->
 			<div class="container_btn" id="container_btn">
 				<button id="prevPage" class="page_btn">Anterior</button>
 				<span id="infoPage" class="pageNumber"></span>
@@ -30,6 +31,14 @@
 			</div>
 			
 		</section>
+		<!-- ===============Modal======================== -->
+		<div id="modal" class="modal hidden">
+			<span class="close_btn" id="closeModal">&times;</span>
+			<div id="modal_content" class="modal_content">
+				
+				<!-- content -->
+			</div>
+		</div>
 	</main>	
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="realTimeProducts.js"></script>

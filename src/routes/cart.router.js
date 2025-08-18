@@ -25,13 +25,7 @@ cartRouter.get('/carts', async(req,res)=>{
 cartRouter.get('/:cid',async(req,res)=>{
 	try{
 		const { cid } = req.params;
-		// const cart = await cartsManager.getCartById(cid);
-		// if(!cart){
-		// 	res.status(404).json({
-		// 		status:"Error", 
-		// 		msg:'Carrito no encontrado',
-		// 	})
-		// }
+		
 		const cart = await cartModel.findById(cid);
 		res.status(200).json({
 			status:"success",
@@ -48,10 +42,8 @@ cartRouter.get('/:cid',async(req,res)=>{
 })		
 
 //crear carrito
-cartRouter.post('/',async(req,res)=>{
+cartRouter.post('/cart',async(req,res)=>{
 	try{
-
-			// const cart = await cartsManager.addCart(newCart);
 			const newCart = await cartModel.create({products: []})
 			return res.status(201).json({
 					status:'success',

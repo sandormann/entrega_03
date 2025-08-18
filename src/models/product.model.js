@@ -14,8 +14,7 @@ const productSchema = mongoose.Schema({
 
 mongoosePaginate.paginate.options = {
     customLabels:{
-        docs:'payload',
-   
+        docs:'payload'
     }
 }
 productSchema.plugin(mongoosePaginate);

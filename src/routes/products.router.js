@@ -42,7 +42,7 @@ productsRouter.post('/products', async(req,res) => {
 	}	
 });
 
-//Buscar porducto por id
+//Buscar producto por id
 productsRouter.get('/product/:pid', async(req,res)=>{
 	try{
 		const { pid } = req.params;

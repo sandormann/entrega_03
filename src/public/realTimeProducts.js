@@ -3,9 +3,13 @@ document.addEventListener('DOMContentLoaded',()=>{
 	
 	//Elementos del dom
 	const productsContainer = document.getElementById('items_container');
-	const productContainer = document.getElementById('product_container');
+	// const productContainer = document.getElementById('product_container');
 	const containerBtn = document.getElementById('container_btn');
-	const galleryTitle = document.getElementById('gallery_title')
+	const modalTitle = document.getElementById('modal_title');
+	const modal = document.getElementById('modal');
+	const modalContent = document.getElementById('modal_content');
+	const closeBtn = document.getElementById('closeModal');
+
 	const renderProducts = async(productsArray)=>{
 		try{
 			productsContainer.innerHTML = "";
@@ -19,7 +23,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 				<p class="card_price">Precio: $ ${p.price}</p>
 				<p class="card_text">Categoría: ${p.category}</p>
 				<p class="card_price">Code: ${p.code}</p>
-				<div class="btn_container">
+				<div class="btn_container2">
 	 				<button class="btn_delete" data-id="${p._id}">Delete</button>
 	 				<button class="btn_see" data-id="${p._id}">Ver</button>
 	 			</div>
@@ -32,36 +36,55 @@ document.addEventListener('DOMContentLoaded',()=>{
 	 		})
 			card.querySelector('.btn_see').addEventListener('click',()=>{
 	 			fetchProduct(p._id, p.title);
+	 			modal.classList.remove('hidden');
 	 		})
 		  })
 		}catch(e){
 			console.log('Error to get products', e)
 		}
 	}
+	//Close modal
+	closeBtn.addEventListener('click',()=>{
+		modal.classList.add('hidden');
+	})
 	const renderProduct = async(product)=>{
-		productsContainer.style.display = 'none';
-		containerBtn.style.display = 'none';
-		productContainer.classList.remove('hidden');
-		galleryTitle.innerHTML = '<h1>Producto</h1>'
 
-		productContainer.innerHTML = "";
+		
+		modalContent.innerHTML = "";
 			const cardProduct = document.createElement('div');
 			cardProduct.classList.add('cardProduct');
 
 			cardProduct.innerHTML = `
+				
 				<h1>${product.product.title}</h1>
 				<p class="cardProduct_text">${product.product.description}</p>
 				<p class="cardProduct_price">Precio: $ ${product.product.price}</p>
 				<p class="cardProduct_text">Categoría: ${product.product.category}</p>
 				<p class="cardProduct_price">Code: ${product.product.code}</p>
 				<div class="btn_container2">
-	 				<button class="btn_delete btn_product" data-id="${product.product._id}">Eliminar</button>
-	 				<button class="btn_see btn_product" data-id="${product.product._id}">Agregar</button>
+	 				
+	 				<button class="btn_see btn_product toCart" data-id="${product.product._id}">Agregar</button>
 	 			</div>
 			</div>`;
-			productContainer.appendChild(cardProduct)
+			modalContent.appendChild(cardProduct);
+
+	 		cardProduct.querySelector('.toCart').addEventListener('click',()=>{
+	 			
+	 			window.location.href='/cart';
+	 			return product.product._id;
+	 			
+	 		})
+
 
 		console.log(product.product.title);
+	}
+	//Agregar producto al carrito
+	const addProductToCart = async(id) => {
+		const res = fetch('http://localhost:8000/api/',{
+			method: 'POST',
+			headers:{ 'content-type':'application/json'},
+			body: JSON.stringify()
+		})
 	}
 	//fetchPro
 	const fetchProduct = async(id)=>{
@@ -152,5 +175,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 					isLoading=false;
 				})
 		})
-	
+
+		
+
+			
 });
