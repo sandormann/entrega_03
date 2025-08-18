@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 	const modal = document.getElementById('modal');
 	const modalContent = document.getElementById('modal_content');
 	const closeBtn = document.getElementById('closeModal');
+	const cartImg = document.querySelector('.cart_image');
 
 	const renderProducts = async(productsArray)=>{
 		try{
@@ -61,16 +62,24 @@ document.addEventListener('DOMContentLoaded',()=>{
 				<p class="cardProduct_price">Precio: $ ${product.product.price}</p>
 				<p class="cardProduct_text">Categoría: ${product.product.category}</p>
 				<p class="cardProduct_price">Code: ${product.product.code}</p>
-				<div class="btn_container2">
-	 				
+				<div class="btn_container2"> 				
 	 				<button class="btn_see btn_product toCart" data-id="${product.product._id}">Agregar</button>
 	 			</div>
 			</div>`;
 			modalContent.appendChild(cardProduct);
 
 	 		cardProduct.querySelector('.toCart').addEventListener('click',()=>{
+	 			createCart();
+	 			// window.location.href='/cart';
+	 			modalContent.innerHTML = '';
+	 			modalContent.innerHTML = `
+	 				<span class="label_modal">Producto agregado</span>
+	 			`
+	 			setTimeout(()=>{
+	 				modal.classList.add('hidden');
+	 			},2000)
+	 				
 	 			
-	 			window.location.href='/cart';
 	 			return product.product._id;
 	 			
 	 		})
@@ -78,14 +87,41 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 		console.log(product.product.title);
 	}
+	//Crear Carrito 
+	const createCart = async()=>{
+		const res = await fetch('/api/cart',{method: 'POST'});
+		const newCart = await res.json()
+		console.log(newCart.cartId)
+	}
 	//Agregar producto al carrito
 	const addProductToCart = async(id) => {
-		const res = fetch('http://localhost:8000/api/',{
-			method: 'POST',
-			headers:{ 'content-type':'application/json'},
-			body: JSON.stringify()
-		})
+		const pid = id;
+		try{
+			const res = fetch(`http://localhost:8000/api/${pid}`,{
+				method: 'POST',
+				headers:{ 'content-type':'application/json'},
+				body: JSON.stringify()
+			})
+
+			const data = await res.jsoin();
+			if(data.status === 'success'){
+				console.log('Product added')
+				// showModal(`Producto ${pid} agregado al carrito`);
+				// updateCartCounter(data.cart.products.length);
+			}else{
+				showModal(`Error ${data.msg}`);
+			}
+		}catch(e){
+			showModal(`Error`)
+		}
+		
 	}
+	cartImg.addEventListener('click',() => {
+		window.location.href= '/cart';
+	})
+	// const showConfirmModal = (msg)=>{
+	// 	modalContent.
+	// }
 	//fetchPro
 	const fetchProduct = async(id)=>{
 		const res = await fetch(`http://localhost:8000/api/product/${id}`);

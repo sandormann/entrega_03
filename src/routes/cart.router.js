@@ -26,7 +26,7 @@ cartRouter.get('/:cid',async(req,res)=>{
 	try{
 		const { cid } = req.params;
 		
-		const cart = await cartModel.findById(cid);
+		const cart = await cartModel.findById(cid).populate('products');
 		res.status(200).json({
 			status:"success",
 			cart
@@ -44,10 +44,11 @@ cartRouter.get('/:cid',async(req,res)=>{
 //crear carrito
 cartRouter.post('/cart',async(req,res)=>{
 	try{
-			const newCart = await cartModel.create({products: []})
+			const newCart = await cartModel.create({products: []});
+			console.log('Id',newCart.id)
 			return res.status(201).json({
 					status:'success',
-					newCart
+					cartId: newCart.id
 				});	
 	}catch(e){
 		console.log({message: e.message})
@@ -63,14 +64,25 @@ cartRouter.post('/:cid/products/:pid',async(req,res)=>{
 	const { cid, pid } = req.params;
 	try{
 
-		const cart = cartsManager.addProductToCart(cid, pid);
-		
+		const cart = await cartModel.findById({_id:cid}).populate('products.product');
 		if(!cart){
 			return res.status(404).json({
 				status:'Error',
 				msg: 'Carrito no encontrado'				
 			})
 		}
+
+		const product = await cartModel.findById({_id:pid});
+		if(!product){
+			return res.status(404).json({
+				status:'Error',
+				msg:'Producto no encontrado'
+			})
+		}
+
+		cart.products.push({product: pid})
+		await cart.save()
+		
 
 		return res.status(200).json({
 				status:'success', 

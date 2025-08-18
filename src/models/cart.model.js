@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
 const cartsCollection = 'carts';
 
-const cartSchema = mongoose.Schema({
+const cartSchema = new mongoose.Schema({
 	products:[
-		{
-		product:{
-			title: String,
-			price: String
-			}
-		}
+	   {
+	   	product:{
+	   			type: mongoose.SchemaTypes.ObjectId,
+	   			ref:'product'   		
+	   	}},
+	   	// quantity: {type:Number, default:0}
 	] 
 }, {timestamps: true});
 

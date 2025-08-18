@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const socket = io();
     const form = document.getElementById("agregarProducto");
 
+    const 
     form.addEventListener('submit', async(e) => {
         e.preventDefault();
 

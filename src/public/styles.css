@@ -29,6 +29,31 @@ header nav a{
 	text-decoration: none;
 	color: #fff;
 }
+.cart_image_container{
+    display: flex;
+    width: 10%;
+    height: 100%;
+    padding: 1%;
+    margin-right: 30px;
+  }
+.cart_image{
+    width: 2.5rem;
+    padding: 1px;
+    fill: white;
+    cursor: pointer;
+  }
+.cart_counter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 10%;
+    height: 30%;
+    background-color: crimson;
+    padding: 12px;
+    font-size: 1.1rem;
+    color: white;
+    border-radius: 50%;
+  }
 body{
 	background: #fafafa;
 }
@@ -222,7 +247,7 @@ border: double 4px #EAEAEA;
 	outline: var(--red-lines);
 	margin:100px auto;
 	padding: 1rem;
-	width: 90%;
+	width: 70%;
 	min-height: 400px;
 	border-radius: 10px;
 	animation: fadeIn 0.3s ease;
@@ -239,4 +264,8 @@ border: double 4px #EAEAEA;
 	right: 10px;
 	font-size: 1.5rem;
 	cursor: pointer;
+}
+.label_modal{
+	font-size: 2rem;
+
 }

@@ -27,7 +27,6 @@ productsRouter.get('/products', async (req,res) => {
 productsRouter.post('/products', async(req,res) => {
  	try{
 		const { title,description,code,price,status,category } = req.body;
-		console.log(req.body);
 		const newProduct = await productModel.create({title,description,code,price,status,category})
 		return res.status(200).json({
 					status:'success', 
@@ -52,11 +51,7 @@ productsRouter.get('/product/:pid', async(req,res)=>{
 				status:"success",
 				product
 			});
-		// return res.status(200).render('productViewer',{
-		// 		status:"success",
-		// 		product
-		// 	});
-
+		
 	}catch(e){
 		console.log({message: e.message});
 		return	res.status(500).json({
