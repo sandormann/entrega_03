@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded',()=>{
-		console.log('Lógica del carrito');
+		const socket = io();
 
 		const cartsContainer = document.getElementById('carts_container');
 		//Listar carritos
@@ -24,15 +24,23 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 			cartsArray.forEach(c => {
 				const card = document.createElement('div');
-
+				card.classList.add('cardCart')
 				card.innerHTML = `
-					<span class="close" id="close">&times;</span>
+					<span class="close_card_cart" data-id="${c._id}">&times;</span>
 					<h3>Tus productos</h3>
 					<span>${c._id}</span>
 					<span class="date">${new Date(c.createdAt).toLocaleString()}</span>
 					<div>Productos:${c.products}</div>
 				`;
 				cartsContainer.appendChild(card)
+
+				card.querySelector('.close_card_cart').addEventListener('click',()=>{
+					console.log('Eliminar',c._id)
+					socket.emit('deleteCart', c._id);
+					socket.on('updatedCarts', carts => {
+						renderCarts(carts);
+					})
+				})
 			})
 
 		}

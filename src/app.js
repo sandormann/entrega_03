@@ -9,6 +9,7 @@ import http from 'http';
 import { Server } from 'socket.io';
 import mongoose from 'mongoose';
 import productModel from './models/product.model.js';
+import cartModel from './models/cart.model.js'
 import dataBase from './db/connectionDB.js';
 
 import ProductsManager from './managers/productsManager.js';
@@ -40,11 +41,13 @@ io.on('connection', async(socket)=>{
 		//Envío del resultado
 		io.emit('showProducts', await productModel.find());
 	});
-	// socket.on('showProduct', async(pid)=>{
-	// 	const product = await productModel.findById(pid)
+	socket.on('deleteCart', async(cid)=>{
+		const cart = await cartModel.findByIdAndDelete(cid);
+		const cartsList = await cartModel.find();
+		socket.emit('updatedCarts',cartsList);
 	// 	io.emit('showProduct',product)
-	// 	console.log(product)
-	// })
+		console.log(cart)
+	})
 
 	socket.on('addProduct', async(producto)=>{
 		try{
