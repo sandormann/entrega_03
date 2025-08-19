@@ -11,6 +11,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 	const closeBtn = document.getElementById('closeModal');
 	const cartImg = document.querySelector('.cart_image');
 
+
+
 	const renderProducts = async(productsArray)=>{
 		try{
 			productsContainer.innerHTML = "";
@@ -34,6 +36,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 			card.querySelector('.btn_delete').addEventListener('click',()=>{
 	 			console.log(p._id, p.title);
 	 			socket.emit('eliminarProducto', p._id)
+	 			socket.on('showProducts', products => {
+	 				renderProducts(products)
+	 			})
 	 		})
 			card.querySelector('.btn_see').addEventListener('click',()=>{
 	 			fetchProduct(p._id, p.title);
@@ -44,6 +49,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 			console.log('Error to get products', e)
 		}
 	}
+	
 	//Close modal
 	closeBtn.addEventListener('click',()=>{
 		modal.classList.add('hidden');
@@ -70,64 +76,69 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 	 		cardProduct.querySelector('.toCart').addEventListener('click',()=>{
 	 			createCart();
-	 			// window.location.href='/cart';
+
 	 			modalContent.innerHTML = '';
 	 			modalContent.innerHTML = `
 	 				<span class="label_modal">Producto agregado</span>
 	 			`
 	 			setTimeout(()=>{
 	 				modal.classList.add('hidden');
-	 			},2000)
-	 				
-	 			
+	 			},2000);
 	 			return product.product._id;
-	 			
 	 		})
-
-
-		console.log(product.product.title);
+		console.log('Id Pro',product.product.title);
 	}
+
 	//Crear Carrito 
 	const createCart = async()=>{
 		const res = await fetch('/api/cart',{method: 'POST'});
-		const newCart = await res.json()
-		console.log(newCart.cartId)
+		const newCart = await res.json();
+		const cartId = newCart.cartId;
+		console.log('newCart',cartId);
+		addProductToCart(cartId);
+		return cartId;
 	}
+	
 	//Agregar producto al carrito
-	const addProductToCart = async(id) => {
-		const pid = id;
-		try{
-			const res = fetch(`http://localhost:8000/api/${pid}`,{
-				method: 'POST',
-				headers:{ 'content-type':'application/json'},
-				body: JSON.stringify()
-			})
+	const addProductToCart = async(cartId, productId) => {
+		console.log('Id del carrito',cartId,'Id del Producto:',productId);
+		
 
-			const data = await res.jsoin();
-			if(data.status === 'success'){
-				console.log('Product added')
-				// showModal(`Producto ${pid} agregado al carrito`);
-				// updateCartCounter(data.cart.products.length);
-			}else{
-				showModal(`Error ${data.msg}`);
-			}
-		}catch(e){
-			showModal(`Error`)
-		}
+		// const pid = id;
+		// try{
+		// 	const res = fetch(`http://localhost:8000/api/${pid}`,{
+		// 		method: 'POST',
+		// 		headers:{ 'content-type':'application/json'},
+		// 		body: JSON.stringify()
+		// 	})
+
+		// 	const data = await res.jsoin();
+		// 	if(data.status === 'success'){
+		// 		console.log('Product added')
+		// 		// showModal(`Producto ${pid} agregado al carrito`);
+		// 		// updateCartCounter(data.cart.products.length);
+		// 	}else{
+		// 		showModal(`Error ${data.msg}`);
+		// 	}
+		// }catch(e){
+		// 	showModal(`Error`)
+		// }
 		
 	}
+	socket.on('updatedCart',cart =>{
+		console.log(cart)
+	})
+	//Link del Carrito
 	cartImg.addEventListener('click',() => {
 		window.location.href= '/cart';
 	})
-	// const showConfirmModal = (msg)=>{
-	// 	modalContent.
-	// }
-	//fetchPro
+	
 	const fetchProduct = async(id)=>{
 		const res = await fetch(`http://localhost:8000/api/product/${id}`);
 		const product = await res.json();
+		const productId = product.product._id;
 
-		renderProduct(product) 
+		renderProduct(product);
 	}
 	//Url
 		let defaultFilters = {

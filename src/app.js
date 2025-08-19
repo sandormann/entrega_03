@@ -36,17 +36,21 @@ io.on('connection', async(socket)=>{
 	const products = await productModel.find();
 	// socket.emit('showProducts', products);
 
-	socket.on('eliminarProducto', async(id)=>{
-		await productModel.findByIdAndDelete(id);
+	socket.on('eliminarProducto', async(pid)=>{
+		const product = await productModel.findByIdAndDelete(pid);
+		const productsList = await productModel.find()  
 		//Envío del resultado
-		io.emit('showProducts', await productModel.find());
+		io.emit('showProducts', productsList);
 	});
 	socket.on('deleteCart', async(cid)=>{
 		const cart = await cartModel.findByIdAndDelete(cid);
 		const cartsList = await cartModel.find();
 		socket.emit('updatedCarts',cartsList);
-	// 	io.emit('showProduct',product)
-		console.log(cart)
+	});
+	socket.on('addToCart', async(cartId) =>{
+		const cart = await cartModel.findById(cartId);
+		socket.io('updatedCart',cart)
+
 	})
 
 	socket.on('addProduct', async(producto)=>{
