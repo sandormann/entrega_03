@@ -49,7 +49,7 @@ io.on('connection', async(socket)=>{
 	});
 	socket.on('addToCart', async(cartId) =>{
 		const cart = await cartModel.findById(cartId);
-		socket.io('updatedCart',cart)
+		socket.io('updatedCart',cart);
 
 	})
 

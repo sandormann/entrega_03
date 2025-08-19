@@ -18,19 +18,33 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 		fetchCarts();
 
+
 		const renderCarts = async(cartsArray) =>{
 		
 			cartsContainer.innerHTML = "";
 
 			cartsArray.forEach(c => {
-				const card = document.createElement('div');
+
+				console.log('Productos en carrito:', c.products);
+
+
+			const productsInCart = c.products.map(p => `
+			<div class="itemProduct"><br><hr>
+					<span>Producto:  ${p.product.title} </span></br>
+					<span>Descripción:  ${p.product.description} </span></br>
+					<span>Cantidad:   ${p.quantity} </span></br>
+					<span>Precio:  ${p.product.price} </span></br>
+					<button class="btn_see" data-id="${p._id}">Actualizar</button>
+				</div>
+			`).join('')
+
+			const card = document.createElement('div');
 				card.classList.add('cardCart')
 				card.innerHTML = `
 					<span class="close_card_cart" data-id="${c._id}">&times;</span>
 					<h3>Tus productos</h3>
-					<span>${c._id}</span>
 					<span class="date">${new Date(c.createdAt).toLocaleString()}</span>
-					<div>Productos:${c.products}</div>
+					<div>Productos:${productsInCart}</div>
 				`;
 				cartsContainer.appendChild(card)
 
@@ -44,6 +58,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 			})
 
 		}
+
+		 
 });
 
 

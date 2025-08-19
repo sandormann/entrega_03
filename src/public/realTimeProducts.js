@@ -54,7 +54,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 	closeBtn.addEventListener('click',()=>{
 		modal.classList.add('hidden');
 	})
-	const renderProduct = async(product)=>{
+	///Render product
+	const renderProduct = async(data)=>{
 
 		
 		modalContent.innerHTML = "";
@@ -63,19 +64,21 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 			cardProduct.innerHTML = `
 				
-				<h1>${product.product.title}</h1>
-				<p class="cardProduct_text">${product.product.description}</p>
-				<p class="cardProduct_price">Precio: $ ${product.product.price}</p>
-				<p class="cardProduct_text">Categoría: ${product.product.category}</p>
-				<p class="cardProduct_price">Code: ${product.product.code}</p>
+				<h1>${data.product.title}</h1>
+				<p class="cardProduct_text">${data.product.description}</p>
+				<p class="cardProduct_price">Precio: $ ${data.product.price}</p>
+				<p class="cardProduct_text">Categoría: ${data.product.category}</p>
+				<p class="cardProduct_price">Code: ${data.product.code}</p>
 				<div class="btn_container2"> 				
-	 				<button class="btn_see btn_product toCart" data-id="${product.product._id}">Agregar</button>
+	 				<button class="btn_see btn_product toCart" data-id="${data.product._id}">Agregar</button>
 	 			</div>
 			</div>`;
 			modalContent.appendChild(cardProduct);
 
 	 		cardProduct.querySelector('.toCart').addEventListener('click',()=>{
-	 			createCart();
+	 			
+	 			const productRefId = data.product._id;
+	 			createCart(productRefId);
 
 	 			modalContent.innerHTML = '';
 	 			modalContent.innerHTML = `
@@ -84,62 +87,66 @@ document.addEventListener('DOMContentLoaded',()=>{
 	 			setTimeout(()=>{
 	 				modal.classList.add('hidden');
 	 			},2000);
-	 			return product.product._id;
+	 			
 	 		})
-		console.log('Id Pro',product.product.title);
 	}
 
+
+
+	const fetchProduct = async(id)=>{
+		try{
+			const res = await fetch(`http://localhost:8000/api/product/${id}`);
+    		const data = await res.json();
+
+    		renderProduct(data);
+
+		}catch(e){
+			console.log(e)
+		}
+	}
+
+	//Agregar producto al carrito
+	const addProductToCart = async(cartId, productRefId) => {
+		try{
+			const res = await fetch(`http://localhost:8000/api/${cartId}/product/${productRefId}`,{
+				method:'POST'
+			});
+			const result = await res.json();
+			console.log('Added product',result);
+		
+		}catch(e){
+			console.log('Error',e)
+		}		
+	}
+	
 	//Crear Carrito 
-	const createCart = async()=>{
+	const createCart = async(productRefId)=>{
 		const res = await fetch('/api/cart',{method: 'POST'});
 		const newCart = await res.json();
 		const cartId = newCart.cartId;
 		console.log('newCart',cartId);
-		addProductToCart(cartId);
+
+		if(cartId){
+			
+			console.log('C', cartId,"P", productRefId);
+			addProductToCart(cartId,productRefId);
+		}
 		return cartId;
 	}
+
 	
-	//Agregar producto al carrito
-	const addProductToCart = async(cartId, productId) => {
-		console.log('Id del carrito',cartId,'Id del Producto:',productId);
-		
-
-		// const pid = id;
-		// try{
-		// 	const res = fetch(`http://localhost:8000/api/${pid}`,{
-		// 		method: 'POST',
-		// 		headers:{ 'content-type':'application/json'},
-		// 		body: JSON.stringify()
-		// 	})
-
-		// 	const data = await res.jsoin();
-		// 	if(data.status === 'success'){
-		// 		console.log('Product added')
-		// 		// showModal(`Producto ${pid} agregado al carrito`);
-		// 		// updateCartCounter(data.cart.products.length);
-		// 	}else{
-		// 		showModal(`Error ${data.msg}`);
-		// 	}
-		// }catch(e){
-		// 	showModal(`Error`)
-		// }
-		
-	}
 	socket.on('updatedCart',cart =>{
 		console.log(cart)
 	})
+
 	//Link del Carrito
 	cartImg.addEventListener('click',() => {
 		window.location.href= '/cart';
 	})
 	
-	const fetchProduct = async(id)=>{
-		const res = await fetch(`http://localhost:8000/api/product/${id}`);
-		const product = await res.json();
-		const productId = product.product._id;
 
-		renderProduct(product);
-	}
+
+
 	//Url
 		let defaultFilters = {
 			page:1,
