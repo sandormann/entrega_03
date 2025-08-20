@@ -82,21 +82,24 @@ cartRouter.post('/:cid/product/:pid',async(req,res)=>{
 		}
 
 
-		cart.products.push({product: pid, quantity:1})
-		await cart.save()
+		if(cart){
+			const productInCart = cart.products.find(p => p.product.toString() === pid);
+			if(productInCart){
+				productInCart.quantity +=1;								
+			}
+			else{
+				cart.products.push({product: pid, quantity:1})
+			}
+			await cart.save()
+			console.log(productInCart)	
+		}
+
 		const updatedCart = await cartModel.findById(cid).populate('products.product');
 		return res.status(200).json({
 				status:'success', 
 				cart:updatedCart,
 				product
-		});
-
-// const existingProduct = cart.products.find(p => p.product.toString() === pid);
-// if (existingProduct) {
-//   existingProduct.quantity += 1;
-// } else {
-//   cart.products.push({ product: pid, quantity: 1 });
-// }		
+		});	
 	}catch(error){
 		return res.status(500).json({
 				status:"Error", 
