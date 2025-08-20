@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 	//Agregar producto al carrito
 	const addProductToCart = async(cartId, productRefId) => {
-		try{
+		try{ 
 			const res = await fetch(`http://localhost:8000/api/${cartId}/product/${productRefId}`,{
 				method:'POST'
 			});
@@ -124,13 +124,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 		const res = await fetch('/api/cart',{method: 'POST'});
 		const newCart = await res.json();
 		const cartId = newCart.cartId;
-		console.log('newCart',cartId);
 
-		if(cartId){
-			
-			console.log('C', cartId,"P", productRefId);
-			addProductToCart(cartId,productRefId);
-		}
 		return cartId;
 	}
 
