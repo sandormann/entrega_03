@@ -6,9 +6,18 @@ const productsRouter = Router();
 //Listar productos
 productsRouter.get('/products', async (req,res) => {
 	try{
-		const parsedQuery = new PaginationParameters(req);
-		const queries = parsedQuery.get();
-		const products = await productModel.paginate(...queries);
+		// const parsedQuery = new PaginationParameters(req);
+		// const queries = parsedQuery.get();
+		const {page,limit,sort, category} = req.query;
+		const filter = {};
+		if(category) filter.category = category;
+		const options = {
+			page: parseInt(page),
+			limit: parseInt(limit),
+			sort: {[sort]: 1}
+		}
+		// const products = await productModel.paginate(...queries);
+		const products = await productModel.paginate(filter,options);
 		// console.log(products.page)		
 		return res.status(200).json({ 
 					status: 'success', 
@@ -58,8 +67,7 @@ productsRouter.get('/product/:pid', async(req,res)=>{
 			status:"Internal error server", 
 			msg:'View console',
 		})
-	}
-	
+	} 
 });
 
 //Actualizar producto

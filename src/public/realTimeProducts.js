@@ -92,7 +92,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 	}
 
 
-
 	const fetchProduct = async(id)=>{
 		try{
 			const res = await fetch(`http://localhost:8000/api/product/${id}`);
@@ -107,7 +106,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 	//Agregar producto al carrito
 	const addProductToCart = async(cartId, productRefId) => {
-		try{ 
+		try{  
 			const res = await fetch(`http://localhost:8000/api/${cartId}/product/${productRefId}`,{
 				method:'POST'
 			});
@@ -139,22 +138,34 @@ document.addEventListener('DOMContentLoaded',()=>{
 	})
 	
 
-
+	document.querySelectorAll('.link_category').forEach(btn => {
+		btn.addEventListener('click',()=>{
+			defaultFilters.category = btn.dataset.category;
+			const url = buildURL()
+			console.log('categoria',defaultFilters.category);
+			console.log('filters',defaultFilters);
+			console.log('url',url);
+			fetchProducts(url)
+		})
+	})
 
 	//Url
 		let defaultFilters = {
 			page:1,
 			limit:10,
 			sort:'price',
-			// category:''
+			category:''
 		}
+		console.log('filters',defaultFilters);
 	const buildURL = ()=>{	
 		const filters = { ...defaultFilters }; 
 		const params = new URLSearchParams();
 		if(filters.page) params.set('page', filters.page);
-		if(filters.page) params.set('limit', filters.limit);
-		params.set('sort', filters.sort);
-		// params.set('category', category);
+		if(filters.limit) params.set('limit', filters.limit);
+		if(filters.sort) params.set('sort', filters.sort);
+		if(filters.category) params.set('category', filters.category);
+
+		console.log(params)
 		
 		return `http://localhost:8000/api/products?${params.toString()}`
 	}
@@ -177,11 +188,6 @@ document.addEventListener('DOMContentLoaded',()=>{
 		}
 	}
 	fetchProducts()
-
-	// socket.on('showProducts', (data)=>{
-	// 	renderProducts(data)
-	// });
-	
 
 	//Paginación
 	const prevBtn = document.getElementById('prevPage');
