@@ -9,8 +9,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 				const res = await fetch('http://localhost:8000/api/carts');
 				const data = await res.json();
 				const cartsArray = data.carts;
-				renderCarts(cartsArray)
-				console.log(data)
+				renderCarts(cartsArray);
 			}catch(e){
 				console.log('Error al listar los carritos', e)
 			}
@@ -34,10 +33,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 					<span>Descripción:  ${p.product.description} </span></br>
 					<span>Cantidad:   ${p.quantity} </span></br>
 					<span>Precio:  ${p.product.price} </span></br>
-					<button class="btn_see" data-id="${p._id}">Actualizar</button>
+					<button class="btn_see" data-cart="${c._id}" data-id="${p.product._id}">Actualizar</button>
+					<button class="btn_delete" data-cart="${c._id}" data-id="${p.product._id}">Borrar</button>
 				</div>
-			`).join('')
-
+			`
+			).join('')
+			
 			const card = document.createElement('div');
 				card.classList.add('cardCart')
 				card.innerHTML = `
@@ -51,15 +52,44 @@ document.addEventListener('DOMContentLoaded',()=>{
 				card.querySelector('.close_card_cart').addEventListener('click',()=>{
 					console.log('Eliminar',c._id)
 					socket.emit('deleteCart', c._id);
-					socket.on('updatedCarts', carts => {
-						renderCarts(carts);
-					})
 				})
-			})
+				card.querySelectorAll('.btn_see').forEach(btn =>{
+					btn.addEventListener('click',()=>{
+						const productId = btn.dataset.id;
+						const cartId = btn.dataset.id;
+						console.log('Actualizar producto',productId);
+					});
+				})
+				
+				card.querySelectorAll('.btn_delete').forEach(btn =>{
+					btn.addEventListener('click',async()=>{
+						const productId = btn.dataset.id;
+						const cartId = btn.dataset.cart;
+
+						try{
+							const res = await fetch(`http://localhost:8000/api/${cartId}/product/${productId}`,{
+								method:'delete',
+								headers:{'Content-Type':'application/json'}
+							})
+
+							const data = await res.json();
+							console.log(data)
+							const cartsArray = data.carts;
+							console.log('Producto eliminado', cartsArray)
+							renderCarts(cartsArray)
+						}catch(e){
+							console.error('Error',e)
+						}
+
+					});
+				});	
+			});
 
 		}
 
-		 
+		socket.on('updatedCarts', carts => {
+						renderCarts(carts);
+		});
 });
 
 

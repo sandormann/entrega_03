@@ -47,6 +47,14 @@ io.on('connection', async(socket)=>{
 		const cartsList = await cartModel.find();
 		socket.emit('updatedCarts',cartsList);
 	});
+	// socket.on('deleteProductFromCart',async(cartId, productId)=>{
+	// 	const cart = await cartModel.findById(cartId);
+	// 	if(cart){
+	// 		cart.products = await productModel.filter(p => p.product.toString() !== productId);
+	// 		console.log(carts.products)
+	// 	}
+	// 	socket.emit('updatedCarts',cartsList):
+	// })
 	socket.on('addToCart', async(cartId) =>{
 		const cart = await cartModel.findById(cartId);
 		socket.io('updatedCart',cart);

@@ -75,10 +75,13 @@ document.addEventListener('DOMContentLoaded',()=>{
 			</div>`;
 			modalContent.appendChild(cardProduct);
 
-	 		cardProduct.querySelector('.toCart').addEventListener('click',()=>{
+	 		cardProduct.querySelector('.toCart').addEventListener('click',async()=>{
 	 			
 	 			const productRefId = data.product._id;
-	 			createCart(productRefId);
+	 			const cartId = await getCartIdStoraged();
+	 			console.log(cartId)
+
+	 			await addProductToCart(cartId, productRefId)
 
 	 			modalContent.innerHTML = '';
 	 			modalContent.innerHTML = `
@@ -119,14 +122,22 @@ document.addEventListener('DOMContentLoaded',()=>{
 	}
 	
 	//Crear Carrito 
-	const createCart = async(productRefId)=>{
+	const createCart = async()=>{
 		const res = await fetch('/api/cart',{method: 'POST'});
 		const newCart = await res.json();
 		const cartId = newCart.cartId;
 
+		localStorage.setItem('cartId',cartId)
 		return cartId;
 	}
 
+	const getCartIdStoraged = async()=>{
+		let cartId = localStorage.getItem('cartId');
+		if(!cartId){
+			cartId = await createCart();
+		}
+		return cartId;
+	}
 	
 	socket.on('updatedCart',cart =>{
 		console.log(cart)

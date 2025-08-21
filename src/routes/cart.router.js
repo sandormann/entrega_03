@@ -128,5 +128,30 @@ cartRouter.delete('/:cid', async(req,res)=> {
 
 	}
 })
+//Borrar producto del carrito
+cartRouter.delete('/:cid/product/:pid', async(req,res)=> {
+	const { cid, pid } = req.params;
+
+	try{
+		const cart = await cartModel.findById(cid);
+		if(cart){
+			console.log('carrito encontrado',cart)
+			cart.products = await cart.products.filter(p => p.product.toString() !== pid);
+			await cart.save();
+		}
+		const updatedCart = await cartModel.findById(cid).populate('products.product');
+		return res.status(200).json({
+			status: 'success',
+			cart: updatedCart
+		})
+	}catch(e){
+		console.error({message: e.message})
+		return res.status(500).json({
+			status: 'Internal error server',
+			msg:'View console'
+		})
+
+	}
+})
 export default cartRouter;
  
